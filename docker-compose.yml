@@ -1,0 +1,50 @@
+# Antes de levantar: docker network create linares
+services:
+
+  db-linares:
+    image: mariadb:11.4
+    container_name: db-linares
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root123
+      MARIADB_DATABASE: libreria
+      MARIADB_USER: linares
+      MARIADB_PASSWORD: linares123
+    ports:
+      - "3307:3306"          # 3307 en el host para no chocar con un MySQL/XAMPP local
+    volumes:
+      - ./db/libreria.sql:/docker-entrypoint-initdb.d/01_libreria.sql:ro
+      - datos-libreria:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - linares
+
+  api-linares:
+    build: .
+    image: libreria-api:1.0
+    container_name: api-linares
+    restart: unless-stopped
+    depends_on:
+      db-linares:
+        condition: service_healthy
+    environment:
+      DB_HOST: db-linares     # nombre del contenedor dentro de la red linares
+      DB_PORT: 3306
+      DB_NAME: libreria
+      DB_USER: linares
+      DB_PASSWORD: linares123
+    ports:
+      - "8080:8080"
+    networks:
+      - linares
+
+volumes:
+  datos-libreria:
+
+networks:
+  linares:
+    external: true           # red creada a mano con: docker network create linares

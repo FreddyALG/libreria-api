@@ -1,0 +1,278 @@
+@startuml Diagrama_Clases_Libreria
+title Diagrama de Clases - API Librería (Fredy Linares)
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+left to right direction
+
+package "persistence.entity" {
+  class AutorEntity <<Entity>> {
+    - idAutor : Integer
+    - nombre : String
+    - pais : String
+    - libros : List<LibroEntity>
+    + getIdAutor() : Integer
+    + getNombre() : String
+    + setNombre(nombre : String) : void
+    + getPais() : String
+    + setPais(pais : String) : void
+    + getLibros() : List<LibroEntity>
+  }
+
+  class EditorialEntity <<Entity>> {
+    - idEditorial : Integer
+    - nombre : String
+    - pais : String
+    - libros : List<LibroEntity>
+    + getIdEditorial() : Integer
+    + getNombre() : String
+    + setNombre(nombre : String) : void
+    + getPais() : String
+    + setPais(pais : String) : void
+    + getLibros() : List<LibroEntity>
+  }
+
+  class LibroEntity <<Entity>> {
+    - idLibro : Integer
+    - titulo : String
+    - fechaPublicacion : LocalDate
+    - autor : AutorEntity
+    - editorial : EditorialEntity
+    + getIdLibro() : Integer
+    + getTitulo() : String
+    + setTitulo(titulo : String) : void
+    + getFechaPublicacion() : LocalDate
+    + setFechaPublicacion(f : LocalDate) : void
+    + getAutor() : AutorEntity
+    + setAutor(a : AutorEntity) : void
+    + getEditorial() : EditorialEntity
+    + setEditorial(e : EditorialEntity) : void
+  }
+}
+
+package "persistence.repository" {
+  interface "JpaRepository<T, ID>" as JpaRepository <<Spring Data>>
+  interface AutorRepository <<Repository>>
+  interface EditorialRepository <<Repository>>
+  interface LibroRepository <<Repository>> {
+    + findByAutorIdAutor(idAutor : Integer) : List<LibroEntity>
+    + findByEditorialIdEditorial(idEditorial : Integer) : List<LibroEntity>
+    + findByTituloContainingIgnoreCase(texto : String) : List<LibroEntity>
+    + existsByAutorIdAutor(idAutor : Integer) : boolean
+    + existsByEditorialIdEditorial(idEditorial : Integer) : boolean
+  }
+}
+
+package "dto" {
+  class AutorRequestDTO <<record>> {
+    + nombre : String
+    + pais : String
+  }
+  class AutorResponseDTO <<record>> {
+    + idAutor : Integer
+    + nombre : String
+    + pais : String
+    + totalLibros : Integer
+  }
+  class EditorialRequestDTO <<record>> {
+    + nombre : String
+    + pais : String
+  }
+  class EditorialResponseDTO <<record>> {
+    + idEditorial : Integer
+    + nombre : String
+    + pais : String
+    + totalLibros : Integer
+  }
+  class LibroRequestDTO <<record>> {
+    + titulo : String
+    + fechaPublicacion : LocalDate
+    + idAutor : Integer
+    + idEditorial : Integer
+  }
+  class LibroResponseDTO <<record>> {
+    + idLibro : Integer
+    + titulo : String
+    + fechaPublicacion : LocalDate
+    + idAutor : Integer
+    + nombreAutor : String
+    + idEditorial : Integer
+    + nombreEditorial : String
+  }
+  class ErrorResponseDTO <<record>> {
+    + timestamp : LocalDateTime
+    + status : int
+    + error : String
+    + mensaje : String
+    + ruta : String
+    + detalles : List<String>
+  }
+}
+
+package "mapper" {
+  class AutorMapper <<Component>> {
+    + toResponse(e : AutorEntity) : AutorResponseDTO
+    + toEntity(dto : AutorRequestDTO) : AutorEntity
+    + updateEntity(dto : AutorRequestDTO, e : AutorEntity) : void
+  }
+  class EditorialMapper <<Component>> {
+    + toResponse(e : EditorialEntity) : EditorialResponseDTO
+    + toEntity(dto : EditorialRequestDTO) : EditorialEntity
+    + updateEntity(dto : EditorialRequestDTO, e : EditorialEntity) : void
+  }
+  class LibroMapper <<Component>> {
+    + toResponse(e : LibroEntity) : LibroResponseDTO
+    + toEntity(dto : LibroRequestDTO, a : AutorEntity, ed : EditorialEntity) : LibroEntity
+    + updateEntity(dto : LibroRequestDTO, a : AutorEntity, ed : EditorialEntity, e : LibroEntity) : void
+  }
+}
+
+package "service" {
+  interface "ICrudService<REQ, RES, ID>" as ICrudService {
+    + listar() : List<RES>
+    + buscarPorId(id : ID) : RES
+    + crear(dto : REQ) : RES
+    + actualizar(id : ID, dto : REQ) : RES
+    + eliminar(id : ID) : void
+  }
+  interface AutorService
+  interface EditorialService
+  interface LibroService {
+    + listarPorAutor(idAutor : Integer) : List<LibroResponseDTO>
+    + listarPorEditorial(idEditorial : Integer) : List<LibroResponseDTO>
+    + buscarPorTitulo(texto : String) : List<LibroResponseDTO>
+  }
+
+  package "impl" {
+    class AutorServiceImpl <<Service>> {
+      - autorRepository : AutorRepository
+      - libroRepository : LibroRepository
+      - mapper : AutorMapper
+      - obtenerEntidad(id : Integer) : AutorEntity
+    }
+    class EditorialServiceImpl <<Service>> {
+      - editorialRepository : EditorialRepository
+      - libroRepository : LibroRepository
+      - mapper : EditorialMapper
+      - obtenerEntidad(id : Integer) : EditorialEntity
+    }
+    class LibroServiceImpl <<Service>> {
+      - libroRepository : LibroRepository
+      - autorRepository : AutorRepository
+      - editorialRepository : EditorialRepository
+      - mapper : LibroMapper
+      - obtenerEntidad(id : Integer) : LibroEntity
+      - obtenerAutor(idAutor : Integer) : AutorEntity
+      - obtenerEditorial(idEditorial : Integer) : EditorialEntity
+    }
+  }
+}
+
+package "controller" {
+  class AutorController <<RestController>> {
+    - autorService : AutorService
+    - libroService : LibroService
+    + listar() : ResponseEntity<List<AutorResponseDTO>>
+    + buscarPorId(id : Integer) : ResponseEntity<AutorResponseDTO>
+    + librosDelAutor(id : Integer) : ResponseEntity<List<LibroResponseDTO>>
+    + crear(dto : AutorRequestDTO) : ResponseEntity<AutorResponseDTO>
+    + actualizar(id : Integer, dto : AutorRequestDTO) : ResponseEntity<AutorResponseDTO>
+    + eliminar(id : Integer) : ResponseEntity<Void>
+  }
+  class EditorialController <<RestController>> {
+    - editorialService : EditorialService
+    - libroService : LibroService
+    + listar() : ResponseEntity<List<EditorialResponseDTO>>
+    + buscarPorId(id : Integer) : ResponseEntity<EditorialResponseDTO>
+    + librosDeLaEditorial(id : Integer) : ResponseEntity<List<LibroResponseDTO>>
+    + crear(dto : EditorialRequestDTO) : ResponseEntity<EditorialResponseDTO>
+    + actualizar(id : Integer, dto : EditorialRequestDTO) : ResponseEntity<EditorialResponseDTO>
+    + eliminar(id : Integer) : ResponseEntity<Void>
+  }
+  class LibroController <<RestController>> {
+    - libroService : LibroService
+    + listar() : ResponseEntity<List<LibroResponseDTO>>
+    + buscarPorTitulo(titulo : String) : ResponseEntity<List<LibroResponseDTO>>
+    + buscarPorId(id : Integer) : ResponseEntity<LibroResponseDTO>
+    + crear(dto : LibroRequestDTO) : ResponseEntity<LibroResponseDTO>
+    + actualizar(id : Integer, dto : LibroRequestDTO) : ResponseEntity<LibroResponseDTO>
+    + eliminar(id : Integer) : ResponseEntity<Void>
+  }
+}
+
+package "exception" {
+  class GlobalExceptionHandler <<RestControllerAdvice>> {
+    + handleNotFound(...) : ResponseEntity<ErrorResponseDTO>
+    + handleConflict(...) : ResponseEntity<ErrorResponseDTO>
+    + handleBadRequest(...) : ResponseEntity<ErrorResponseDTO>
+    + handleValidation(...) : ResponseEntity<ErrorResponseDTO>
+    + handleIntegrity(...) : ResponseEntity<ErrorResponseDTO>
+    + handleGeneric(...) : ResponseEntity<ErrorResponseDTO>
+  }
+  class ResourceNotFoundException
+  class ConflictException
+  class BadRequestException
+  class RuntimeException
+}
+
+package "config" {
+  class OpenApiConfig <<Configuration>> {
+    + libreriaOpenAPI() : OpenAPI
+  }
+}
+
+' ---------- Relaciones ----------
+AutorEntity "0..1" -- "0..*" LibroEntity : autor <
+EditorialEntity "0..1" -- "0..*" LibroEntity : editorial <
+
+AutorRepository --|> JpaRepository
+EditorialRepository --|> JpaRepository
+LibroRepository --|> JpaRepository
+AutorRepository ..> AutorEntity
+EditorialRepository ..> EditorialEntity
+LibroRepository ..> LibroEntity
+
+AutorService --|> ICrudService
+EditorialService --|> ICrudService
+LibroService --|> ICrudService
+AutorServiceImpl ..|> AutorService
+EditorialServiceImpl ..|> EditorialService
+LibroServiceImpl ..|> LibroService
+
+AutorServiceImpl --> AutorRepository
+AutorServiceImpl --> LibroRepository
+AutorServiceImpl --> AutorMapper
+EditorialServiceImpl --> EditorialRepository
+EditorialServiceImpl --> LibroRepository
+EditorialServiceImpl --> EditorialMapper
+LibroServiceImpl --> LibroRepository
+LibroServiceImpl --> AutorRepository
+LibroServiceImpl --> EditorialRepository
+LibroServiceImpl --> LibroMapper
+
+AutorMapper ..> AutorEntity
+AutorMapper ..> AutorRequestDTO
+AutorMapper ..> AutorResponseDTO
+EditorialMapper ..> EditorialEntity
+EditorialMapper ..> EditorialRequestDTO
+EditorialMapper ..> EditorialResponseDTO
+LibroMapper ..> LibroEntity
+LibroMapper ..> LibroRequestDTO
+LibroMapper ..> LibroResponseDTO
+
+AutorController --> AutorService
+AutorController --> LibroService
+EditorialController --> EditorialService
+EditorialController --> LibroService
+LibroController --> LibroService
+
+ResourceNotFoundException --|> RuntimeException
+ConflictException --|> RuntimeException
+BadRequestException --|> RuntimeException
+GlobalExceptionHandler ..> ErrorResponseDTO
+GlobalExceptionHandler ..> ResourceNotFoundException
+GlobalExceptionHandler ..> ConflictException
+GlobalExceptionHandler ..> BadRequestException
+@enduml
