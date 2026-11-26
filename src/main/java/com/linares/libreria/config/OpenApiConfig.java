@@ -12,11 +12,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.tags.Tag;
 
-/**
- * Personalización de la documentación Swagger / OpenAPI.
- * UI:   http://localhost:8080/swagger-ui.html
- * JSON: http://localhost:8080/api-docs
- */
 @Configuration
 public class OpenApiConfig {
 

@@ -7,5 +7,4 @@ import com.linares.libreria.persistence.entity.AutorEntity;
 
 @Repository
 public interface AutorRepository extends JpaRepository<AutorEntity, Integer> {
-	// findAll, findById, save, deleteById, existsById... los hereda de JpaRepository
 }

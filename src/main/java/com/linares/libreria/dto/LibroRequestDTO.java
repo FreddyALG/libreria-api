@@ -7,10 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
-/**
- * Datos para crear o actualizar un libro. El id lo genera la BD (AUTO_INCREMENT).
- * idAutor e idEditorial son opcionales porque en libreria.sql admiten NULL.
- */
 @Schema(name = "LibroRequest", description = "Datos para crear o actualizar un libro")
 public record LibroRequestDTO(
 

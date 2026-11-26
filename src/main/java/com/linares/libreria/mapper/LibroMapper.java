@@ -8,10 +8,6 @@ import com.linares.libreria.persistence.entity.AutorEntity;
 import com.linares.libreria.persistence.entity.EditorialEntity;
 import com.linares.libreria.persistence.entity.LibroEntity;
 
-/**
- * Convierte entre LibroEntity y sus DTO.
- * El autor y la editorial llegan ya buscados desde el servicio (pueden ser null).
- */
 @Component
 public class LibroMapper {
 

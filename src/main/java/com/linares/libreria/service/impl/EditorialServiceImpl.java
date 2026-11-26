@@ -61,7 +61,6 @@ public class EditorialServiceImpl implements EditorialService {
 		if (!editorialRepository.existsById(id)) {
 			throw new ResourceNotFoundException(RECURSO, id);
 		}
-		// FK libros_ibfk_2: no se puede borrar una editorial que tenga libros
 		if (libroRepository.existsByEditorialIdEditorial(id)) {
 			throw new ConflictException(
 					"No se puede eliminar la editorial " + id + " porque tiene libros asociados");

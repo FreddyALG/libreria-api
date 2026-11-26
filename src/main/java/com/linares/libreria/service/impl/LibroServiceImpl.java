@@ -98,7 +98,6 @@ public class LibroServiceImpl implements LibroService {
 		return libroRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(RECURSO, id));
 	}
 
-	/** id null = libro sin autor (la columna admite NULL). Si viene un id, debe existir. */
 	private AutorEntity obtenerAutor(Integer idAutor) {
 		if (idAutor == null) {
 			return null;

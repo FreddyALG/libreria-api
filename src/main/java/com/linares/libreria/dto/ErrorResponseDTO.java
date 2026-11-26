@@ -5,9 +5,6 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Formato uniforme para todas las respuestas de error de la API.
- */
 @Schema(name = "ErrorResponse", description = "Respuesta estándar de error")
 public record ErrorResponseDTO(
 

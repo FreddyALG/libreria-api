@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/** Datos para crear o actualizar una editorial. El id lo genera la BD (AUTO_INCREMENT). */
 @Schema(name = "EditorialRequest", description = "Datos para crear o actualizar una editorial")
 public record EditorialRequestDTO(
 

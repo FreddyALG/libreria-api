@@ -1,7 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
-### Eclipse ###
 .apt_generated
 .classpath
 .factorypath
@@ -11,11 +10,9 @@ target/
 .sts4-cache
 bin/
 
-### IntelliJ / VS Code ###
 .idea
 *.iml
 .vscode/
 
-### SO ###
 .DS_Store
 *.log

@@ -12,16 +12,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-/**
- * Entidad JPA que representa la tabla libros.
- * En libreria.sql id_autor e id_editorial admiten NULL, por eso las relaciones son opcionales.
- */
 @Entity
 @Table(name = "libros")
 public class LibroEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // id_libro es AUTO_INCREMENT
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_libro")
 	private Integer idLibro;
 
@@ -29,7 +25,7 @@ public class LibroEntity {
 	private String titulo;
 
 	@Column(name = "fecha_publicacion")
-	private LocalDate fechaPublicacion; // columna DATE
+	private LocalDate fechaPublicacion;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_autor")

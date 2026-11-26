@@ -11,15 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-/**
- * Entidad JPA que representa la tabla autores.
- */
 @Entity
 @Table(name = "autores")
 public class AutorEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // id_autor es AUTO_INCREMENT
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_autor")
 	private Integer idAutor;
 
@@ -29,7 +26,6 @@ public class AutorEntity {
 	@Column(name = "pais", length = 50)
 	private String pais;
 
-	/* Relación inversa 1..* con libros (sin cascada: la FK no tiene ON DELETE CASCADE) */
 	@OneToMany(mappedBy = "autor")
 	private List<LibroEntity> libros = new ArrayList<>();
 

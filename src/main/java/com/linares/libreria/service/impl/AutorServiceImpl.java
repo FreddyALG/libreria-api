@@ -60,7 +60,6 @@ public class AutorServiceImpl implements AutorService {
 		if (!autorRepository.existsById(id)) {
 			throw new ResourceNotFoundException(RECURSO, id);
 		}
-		// FK libros_ibfk_1: no se puede borrar un autor que tenga libros
 		if (libroRepository.existsByAutorIdAutor(id)) {
 			throw new ConflictException("No se puede eliminar el autor " + id + " porque tiene libros asociados");
 		}

@@ -11,15 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-/**
- * Entidad JPA que representa la tabla editoriales.
- */
 @Entity
 @Table(name = "editoriales")
 public class EditorialEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY) // id_editorial es AUTO_INCREMENT
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_editorial")
 	private Integer idEditorial;
 

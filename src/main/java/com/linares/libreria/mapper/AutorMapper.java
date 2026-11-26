@@ -6,7 +6,6 @@ import com.linares.libreria.dto.AutorRequestDTO;
 import com.linares.libreria.dto.AutorResponseDTO;
 import com.linares.libreria.persistence.entity.AutorEntity;
 
-/** Convierte entre AutorEntity y sus DTO. La entidad JPA nunca sale del servicio. */
 @Component
 public class AutorMapper {
 

@@ -6,7 +6,6 @@ import com.linares.libreria.dto.EditorialRequestDTO;
 import com.linares.libreria.dto.EditorialResponseDTO;
 import com.linares.libreria.persistence.entity.EditorialEntity;
 
-/** Convierte entre EditorialEntity y sus DTO. */
 @Component
 public class EditorialMapper {
 

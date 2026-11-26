@@ -13,7 +13,8 @@ libreria-api/
 ├── pom.xml
 ├── Dockerfile
 ├── docker-compose.yml
-├── db/libreria.sql                    ← script que inicializa la BD en el contenedor
+├── db/libreria.sql                    ← script original entregado por el profesor
+├── src/main/resources/data.sql        ← datos iniciales (INSERT IGNORE)
 ├── diagramas/
 │   ├── diagrama_componentes.puml
 │   └── diagrama_clases.puml
@@ -43,16 +44,25 @@ Las tres llaves primarias son AUTO_INCREMENT, así que el cliente **nunca** env�
 
 ## 2. Base de datos en Docker (red `linares`)
 
+La base de datos **la crea la aplicación automáticamente**:
+- `createDatabaseIfNotExist=true` en la URL crea la base `libreria`.
+- `spring.jpa.hibernate.ddl-auto=update` crea las tablas a partir de las entidades.
+- `data.sql` inserta los autores, editoriales y libros (con `INSERT IGNORE`, no se duplican al reiniciar).
+
+Conexión: usuario `root` sin contraseña.
+
 ```bash
-docker network create linares          # si ya existe, saldrá un aviso: no pasa nada
+docker network create linares
 cd ~/eclipse-workspace/libreria-api
 docker compose up -d db-linares
-docker exec -it db-linares mariadb -ulinares -plinares123 libreria -e "SHOW TABLES; SELECT COUNT(*) FROM libros;"
 ```
-Debe mostrar las 3 tablas y 40 libros.
 
-> El script `.sql` solo se ejecuta la **primera vez** (volumen vacío). Para reiniciar desde cero:
-> `docker compose down -v` y luego `docker compose up -d db-linares`.
+Después de arrancar la API (Eclipse o Docker):
+```bash
+docker exec -it db-linares mariadb -uroot libreria -e "SHOW TABLES; SELECT COUNT(*) FROM libros;"
+```
+
+> Para reiniciar la BD desde cero: `docker compose down -v` y luego `docker compose up -d`.
 
 ---
 

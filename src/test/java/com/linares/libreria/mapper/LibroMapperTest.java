@@ -12,7 +12,6 @@ import com.linares.libreria.dto.LibroResponseDTO;
 import com.linares.libreria.persistence.entity.AutorEntity;
 import com.linares.libreria.persistence.entity.EditorialEntity;
 
-/** Prueba unitaria del mapper (no necesita base de datos). */
 class LibroMapperTest {
 
 	private final LibroMapper mapper = new LibroMapper();
