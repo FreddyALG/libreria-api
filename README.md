@@ -145,4 +145,4 @@ en cada endpoint, `@Schema` con ejemplos en cada DTO y opciones de la UI en `app
 
 ## 7. Diagramas (draw.io)
 
-`Organizar → Insertar → Avanzado → PlantUML…` y pegar el contenido de cada archivo `.puml` de la carpeta `diagramas/`.
+Se implemento dentro de la carpeta de la carpeta `diagramas/` los png y los draw.io para su visualización.
